@@ -683,16 +683,16 @@ BEGIN
     END LOOP;
 
 	-- validating days
-    SELECT (in_dep_time[ARRAY_LENGTH(in_dep_time, 1)].day_of_jouney - 1)
+    SELECT (in_dep_time[ARRAY_LENGTH(in_dep_time, 1)].day_of_journey - 1)
     INTO journey_len;
 
     ASSERT journey_len <= 7 , 'Journey length cannot be more than 7 days';
 
     IF (num_week_days > 1) THEN
         FOR i IN 1 .. (num_week_days - 1) LOOP
-            ASSERT ((in_week_days[i + 1] - in_week_days[i]) > (journey_len)), 'Given running days of the train in incorrect';
+            ASSERT ((in_week_days[i + 1] @- in_week_days[i]) > (journey_len)), 'Given running days of the train in incorrect';
         END LOOP;
-    	ASSERT ((in_week_days[1] - in_week_days[num_week_days]) > (journey_len)), 'Given running days of the train in incorrect';
+    	ASSERT ((in_week_days[1] @- in_week_days[num_week_days]) > (journey_len)), 'Given running days of the train in incorrect';
     END IF;
 
     -- Get the station ids corresponding to station names

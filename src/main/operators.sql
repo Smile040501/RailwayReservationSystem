@@ -34,9 +34,9 @@ RETURNS BOOL
 LANGUAGE PLPGSQL
 AS $$
 BEGIN
-    IF dt1.day_of_journey < dt2.day_of_journey THEN
+    IF dt1."day_of_journey" < dt2."day_of_journey" THEN
         RETURN TRUE;
-    ELSEIF dt1.day_of_journey > dt2.day_of_journey THEN
+    ELSEIF dt1."day_of_journey" > dt2."day_of_journey" THEN
         RETURN FALSE;
     ELSE
         IF dt1.time < dt2.time THEN

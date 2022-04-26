@@ -194,7 +194,7 @@ BEGIN
     INTO len;
 
     FOR i IN 1 .. (len) LOOP
-        result[i] := (result[i] @+ (in_time.day_of_jouney - 1));
+        result[i] := (result[i] @+ (in_time.day_of_journey - 1));
     END LOOP;
 
     RETURN result;
