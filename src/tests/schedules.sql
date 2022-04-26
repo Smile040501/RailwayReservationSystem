@@ -78,8 +78,8 @@ CALL add_schedule(
 
 CALL add_schedule(
     'LGCP'::VARCHAR(100),
-    ARRAY[1, 2]::INT[],
-    ARRAY['AC', 'NON-AC']::SEAT_TYPE[],
+    ARRAY[1, 2, 3]::INT[],
+    ARRAY['AC', 'NON-AC', 'AC']::SEAT_TYPE[],
     ARRAY['Monday']::DAY_OF_WEEK[],
     ARRAY['Lucknow_RS', 'Gujarat_RS', 'Chennai_RS', 'Palakkad_RS']::VARCHAR(100)[],
     ARRAY[(1, '12:00:00'), (1, '14:00:00'), (2, '16:00:00'), (4, '18:00:00')]::DAY_TIME[],
@@ -96,4 +96,15 @@ CALL add_schedule(
     ARRAY[(1, '09:00:00'), (1, '12:00:00'), (2, '01:00:00'), (2, '10:00:00'), (2, '13:00:00'), (3, '11:00:00'), (5, '01:10:00'), (5, '12:50:00'), (6, '05:00:00'), (7, '09:00:00')]::DAY_TIME[],
     ARRAY[(1, '10:00:00'), (1, '16:00:00'), (2, '04:00:00'), (2, '10:30:00'), (3, '07:30:00'), (3, '12:00:00'), (5, '03:00:00'), (5, '15:00:00'), (7, '05:00:00'), (7, '18:00:00')]::DAY_TIME[],
     ARRAY[0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000]::NUMERIC(7, 2)[]
+);
+
+CALL add_schedule(
+    'GIJK'::VARCHAR(100),
+    ARRAY[1]::INT[],
+    ARRAY['AC']::SEAT_TYPE[],
+    ARRAY['Thursday']::DAY_OF_WEEK[],
+    ARRAY['Gujarat_RS', 'Indore_RS', 'Jaipur_RS', 'Kolkata_RS']::VARCHAR(100)[],
+    ARRAY[(1, '09:00:00'), (1, '12:00:00'), (2, '01:00:00'), (2, '10:00:00')]::DAY_TIME[],
+    ARRAY[(1, '10:00:00'), (1, '16:00:00'), (2, '04:00:00'), (2, '10:30:00')]::DAY_TIME[],
+    ARRAY[0, 1000, 2000, 3000]::NUMERIC(7, 2)[]
 );

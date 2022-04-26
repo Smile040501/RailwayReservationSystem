@@ -174,13 +174,13 @@ RETURNS DAY_OF_WEEK[]
 LANGUAGE PLPGSQL
 AS $$
 DECLARE
-    in_time DAY_TIME;
+    in_journey_day INT;
     result DAY_OF_WEEK[] := ARRAY[]::DAY_OF_WEEK[];
     len INT;
     i INT;
 BEGIN
-    SELECT arr_time
-    INTO in_time
+    SELECT (arr_time).day_of_journey
+    INTO in_journey_day
     FROM schedule
     WHERE train_no = in_train_no
         AND curr_station_id = in_station_id;
@@ -194,7 +194,7 @@ BEGIN
     INTO len;
 
     FOR i IN 1 .. (len) LOOP
-        result[i] := (result[i] @+ (in_time.day_of_journey - 1));
+        result[i] := (result[i] @+ (in_journey_day - 1));
     END LOOP;
 
     RETURN result;

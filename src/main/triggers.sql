@@ -13,13 +13,13 @@ BEGIN
         -- Extract train_name, source/destination station names
         SELECT get_train_name(NEW.train_no)
         INTO train_name;
-        SELECT src_station_name(NEW.src_station_id)
+        SELECT get_station_name(NEW.src_station_id)
         INTO src_station_name;
-        SELECT dest_station_name(NEW.dest_station_id)
+        SELECT get_station_name(NEW.dest_station_id)
         INTO dest_station_name;
 
         -- Try allocating seat to this passenger
-        CALL alloc_seat(NEW.pnr, train_name, src_station_name, dest_station_name, NEW.date, NEW.seat_type);
+        CALL allocate_seat(NEW.pnr, train_name, src_station_name, dest_station_name, NEW.date, NEW.seat_type);
     ELSEIF TG_OP = 'UPDATE' AND NEW.booking_status = 'Cancelled' THEN
         -- Loop all the passengers in the waiting queue in order of booking time
         FOR waiting_ticket IN (SELECT pnr,
@@ -42,7 +42,7 @@ BEGIN
             INTO dest_station_name;
 
             -- Try allocating seat to this passenger
-            CALL alloc_seat(waiting_ticket.pnr, train_name, src_station_name, dest_station_name, 
+            CALL allocate_seat(waiting_ticket.pnr, train_name, src_station_name, dest_station_name,
                 waiting_ticket.date, waiting_ticket.seat_type);
         END LOOP;
     END IF;

@@ -4,12 +4,12 @@
 CREATE OR REPLACE PROCEDURE book_tickets(
     in_name VARCHAR(100)[],
     in_age INT[],
+    in_seat_type SEAT_TYPE[],
     src_station VARCHAR(100),
     dest_station VARCHAR(100),
     train_name VARCHAR(100),
     in_date DATE,
-  	in_email VARCHAR(100),
-    in_seat_type SEAT_TYPE[]
+  	in_email VARCHAR(100)
 )
 LANGUAGE PLPGSQL
 AS $$
@@ -22,8 +22,8 @@ DECLARE
     temp_id UUID;
     num_names INT;
     src_station_days DAY_OF_WEEK[];
-    in_day DAY_OF_WEEK[];
-    in_pids UUID[];
+    in_day DAY_OF_WEEK;
+    in_pid UUID;
 BEGIN
     -- Input validation
     ASSERT ARRAY_LENGTH(in_name, 1) = ARRAY_LENGTH(in_age, 1), 'Number of names and age for the passengers do not match';
@@ -70,7 +70,7 @@ BEGIN
                 in_name[i],
                 in_age[i]
             )
-        RETURNING pid INTO in_pids[i];
+        RETURNING pid INTO in_pid;
 
         -- Create tickets for each passenger with initial booking_status as 'Waiting'
         INSERT INTO ticket(
@@ -89,7 +89,7 @@ BEGIN
                 train_number,
                 in_user_id,
                 in_date,
-                in_pids[i]
+                in_pid
             );
     END LOOP;
 
@@ -116,8 +116,6 @@ BEGIN
 	UPDATE ticket
 	SET booking_status = 'Cancelled'
 	WHERE pnr = in_pnr;
-
-	COMMIT;
 END;
 $$;
 
@@ -187,7 +185,7 @@ BEGIN
         seat_id INT,
         res_seat_type SEAT_TYPE,
         booked BOOLEAN
-    ) ON COMMIT DROP;
+    );
 
     -- Add all possible pairs of schedule_id and seat_id to the tmp table
     -- TODO: Try to make this short
@@ -267,7 +265,7 @@ BEGIN
         WHERE pnr = in_pnr;
     END IF;
 
-    COMMIT;
+    DROP TABLE reservation;
 END;
 $$;
 
@@ -830,7 +828,6 @@ BEGIN
 	SET delay_time = in_delay
 	WHERE train_no = train_id
 		AND curr_station_id = station_id;
-    COMMIT;
 END;
 $$;
 
