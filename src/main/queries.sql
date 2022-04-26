@@ -8,7 +8,8 @@ CREATE OR REPLACE PROCEDURE book_tickets(
     dest_station VARCHAR(100),
     train_name VARCHAR(100),
     in_date DATE,
-  	in_email VARCHAR(100)
+  	in_email VARCHAR(100),
+    in_seat_type SEAT_TYPE[]
 )
 LANGUAGE PLPGSQL
 AS $$
@@ -127,7 +128,8 @@ CREATE OR REPLACE PROCEDURE allocate_seat(
     in_train_name VARCHAR(100),
     in_src_station_name VARCHAR(100),
     in_dest_station_name VARCHAR(100),
-    in_date DATE
+    in_date DATE,
+    in_seat_type SEAT_TYPE
 )
 LANGUAGE PLPGSQL
 AS $$
@@ -183,16 +185,18 @@ BEGIN
     CREATE TEMPORARY TABLE reservation (
         sch_id INT,
         seat_id INT,
+        res_seat_type SEAT_TYPE,
         booked BOOLEAN
     ) ON COMMIT DROP;
 
     -- Add all possible pairs of schedule_id and seat_id to the tmp table
+    -- TODO: Try to make this short
     FOR idx IN 1 .. in_total_seats
     LOOP
         FOREACH val IN ARRAY sch_ids
         LOOP
-            INSERT INTO reservation(sch_id, seat_id, booked)
-            VALUES (val, idx, False);
+            INSERT INTO reservation(sch_id, seat_id, res_seat_type, booked)
+            VALUES (val, idx, 'AC', False), (val, idx, 'NON-AC', False);
         END LOOP;
     END LOOP;
 
@@ -204,6 +208,7 @@ BEGIN
                             WHERE date = in_date
                                 AND train_no = in_train_no
                                 AND booking_status = 'Booked'
+                                AND seat_type = in_seat_type
                             )
     LOOP
         FOREACH val IN ARRAY get_sch_ids(
@@ -215,7 +220,8 @@ BEGIN
             UPDATE reservation
             SET booked = True
             WHERE sch_id = val
-                AND seat_id = reservation_info."seat_id";
+                AND seat_id = reservation_info."seat_id"
+                AND res_seat_type = in_seat_type;
             -- debug_cnt := debug_cnt + 1;
             -- RAISE NOTICE 'inside loop seat_id %, sch_id %', reservation_info."seat_id", val;
         END LOOP;
@@ -244,6 +250,7 @@ BEGIN
         SELECT seat_id
         FROM reservation
         WHERE (sch_id = ANY(sch_ids))
+        AND res_seat_type = in_seat_type
         GROUP BY seat_id
         HAVING COALESCE(SUM((booked)::INT), 0) = 0
     )
@@ -255,7 +262,8 @@ BEGIN
     IF tmp_seat_id IS NOT NULL THEN
         UPDATE ticket
         SET booking_status = 'Booked',
-            seat_id = tmp_seat_id
+            seat_id = tmp_seat_id,
+            seat_type = in_seat_type
         WHERE pnr = in_pnr;
     END IF;
 

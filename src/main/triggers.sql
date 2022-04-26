@@ -19,7 +19,7 @@ BEGIN
         INTO dest_station_name;
 
         -- Try allocating seat to this passenger
-        CALL alloc_seat(NEW.pnr, train_name, src_station_name, dest_station_name, NEW.date);
+        CALL alloc_seat(NEW.pnr, train_name, src_station_name, dest_station_name, NEW.date, NEW.seat_type);
     ELSEIF TG_OP = 'UPDATE' AND NEW.booking_status = 'Cancelled' THEN
         -- Loop all the passengers in the waiting queue in order of booking time
         FOR waiting_ticket IN (SELECT pnr,
@@ -42,7 +42,8 @@ BEGIN
             INTO dest_station_name;
 
             -- Try allocating seat to this passenger
-            CALL alloc_seat(waiting_ticket.pnr, train_name, src_station_name, dest_station_name, waiting_ticket.date);
+            CALL alloc_seat(waiting_ticket.pnr, train_name, src_station_name, dest_station_name, 
+                waiting_ticket.date, waiting_ticket.seat_type);
         END LOOP;
     END IF;
 
