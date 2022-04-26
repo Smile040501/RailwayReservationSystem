@@ -28,3 +28,25 @@ CALL book_tickets(
     '2022-03-22'::DATE,
     'def@def.com'
 );
+
+CALL book_tickets(
+    ARRAY['adi', 'manku', 'sattu']::VARCHAR(100)[],
+    ARRAY[14, 30, 69]::INT[],
+    ARRAY[UUID_GENERATE_V4(), UUID_GENERATE_V4(), UUID_GENERATE_V4()]::UUID[],
+    'Chennai_RS',
+    'Kolkata_RS',
+    'CLBK',
+    '2022-03-22'::DATE,
+    'def@def.com'
+);
+
+CALL book_tickets(
+    ARRAY['titu', 'manu', 'chintu']::VARCHAR(100)[],
+    ARRAY[27, 29, 31]::INT[],
+    ARRAY[UUID_GENERATE_V4(), UUID_GENERATE_V4(), UUID_GENERATE_V4()]::UUID[],
+    'Bangalore_RS',
+    'Delhi_RS',
+    'KCBMD',
+    '2022-03-22'::DATE,
+    'def@def.com'
+);
