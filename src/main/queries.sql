@@ -4,7 +4,6 @@
 CREATE OR REPLACE PROCEDURE book_tickets(
     in_name VARCHAR(100)[],
     in_age INT[],
-    in_pid UUID[],
     src_station VARCHAR(100),
     dest_station VARCHAR(100),
     train_name VARCHAR(100),
@@ -23,10 +22,10 @@ DECLARE
     num_names INT;
     src_station_days DAY_OF_WEEK[];
     in_day DAY_OF_WEEK[];
+    in_pids UUID[];
 BEGIN
     -- Input validation
     ASSERT ARRAY_LENGTH(in_name, 1) = ARRAY_LENGTH(in_age, 1), 'Number of names and age for the passengers do not match';
-    ASSERT ARRAY_LENGTH(in_name, 1) = ARRAY_LENGTH(in_pid, 1), 'Number of names and pid provided for the passengers do not match';
 
 	-- Extracting different variables
     SELECT get_user_id(in_email)
@@ -61,25 +60,17 @@ BEGIN
     INTO num_names;
 
     FOR i IN 1 .. num_names LOOP
-        -- Check if that passenger already exists
-    	SELECT pid
-        INTO temp_id
-    	FROM passenger
-    	WHERE pid = in_pid[i];
+        -- Create new passenger
+        INSERT INTO passenger(
+                name,
+                age
+            )
+        VALUES (
+                in_name[i],
+                in_age[i]
+            )
+        RETURNING pid INTO in_pids[i];
 
-    	IF NOT FOUND THEN
-            -- Add that passenger if not already exists
-    		INSERT INTO passenger(
-                    pid,
-                    name,
-                    age
-                )
-    	    VALUES (
-                    in_pid[i],
-                    in_name[i],
-                    in_age[i]
-                );
-        END IF;
         -- Create tickets for each passenger with initial booking_status as 'Waiting'
         INSERT INTO ticket(
                 cost,
@@ -97,7 +88,7 @@ BEGIN
                 train_number,
                 in_user_id,
                 in_date,
-                in_pid[i]
+                in_pids[i]
             );
     END LOOP;
 
