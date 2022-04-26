@@ -8,6 +8,68 @@ CALL add_user('mno', 'mno@mno.com', 55, '9988776655');
 
 -- Bookings
 
+-- TC-1
+-- pqr will in waiting
+CALL book_tickets(
+    ARRAY['ghi', 'jkl', 'mno', 'pqr']::VARCHAR(100)[],
+    ARRAY[13, 15, 17, 19]::INT[],
+    ARRAY['NON-AC', 'NON-AC', 'NON-AC', 'NON-AC']::SEAT_TYPE[],
+    'Indore_RS',
+    'Bangalore_RS',
+    'IJBC',
+    '2022-04-25'::DATE,
+    'abc@abc.com'
+);
+
+-- TC-2
+-- same seat as nanu
+CALL book_tickets(
+    ARRAY['yogita']::VARCHAR(100)[],
+    ARRAY[35]::INT[],
+    ARRAY['NON-AC']::SEAT_TYPE[],
+    'Kolkata_RS',
+    'Bangalore_RS',
+    'KCBMD',
+    '2022-04-25'::DATE,
+    'ghi@ghi.com'
+);
+-- same seat as yogita
+CALL book_tickets(
+    ARRAY['nanu']::VARCHAR(100)[],
+    ARRAY[30]::INT[],
+    ARRAY['NON-AC']::SEAT_TYPE[],
+    'Bangalore_RS',
+    'Delhi_RS',
+    'KCBMD',
+    '2022-04-25'::DATE,
+    'ghi@ghi.com'
+);
+
+-- this will be in waiting 
+CALL book_tickets(
+    ARRAY['titu']::VARCHAR(100)[],
+    ARRAY[31]::INT[],
+    ARRAY['NON-AC']::SEAT_TYPE[],
+    'Chennai_RS',
+    'Delhi_RS',
+    'KCBMD',
+    '2022-04-25'::DATE,
+    'mno@mno.com'
+);
+
+-- TC-3
+-- u5 will be in waiting
+CALL book_tickets(
+    ARRAY['u1', 'u2', 'u3', 'u4', 'u5']::VARCHAR(100)[],
+    ARRAY[27, 29, 31, 25, 15]::INT[],
+    ARRAY['AC','NON-AC','NON-AC','NON-AC','NON-AC']::SEAT_TYPE[],
+    'Mumbai_RS',
+    'Delhi_RS',
+    'KMD',
+    '2022-04-26'::DATE,
+    'mno@mno.com'
+);
+
 -- TC-4
 CALL book_tickets(  -- Will get seat booked
     ARRAY['zyx']::VARCHAR(100)[],
@@ -111,3 +173,4 @@ CALL book_tickets(  -- Will not get seat booked
     '2022-04-29'::DATE,
     'ghi@ghi.com'
 );
+
