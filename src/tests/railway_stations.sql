@@ -1,4 +1,3 @@
-
 -- Railway stations
 CALL add_railway_station('Bangalore_RS', 'Bangalore', 'KA');
 CALL add_railway_station('Chennai_RS', 'Chennai', 'TN');
