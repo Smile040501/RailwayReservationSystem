@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS ticket (
     date DATE NOT NULL,
     pid UUID NOT NULL,
   	seat_id INT DEFAULT NULL,
+    seat_type SEAT_TYPE NOT NULL,
     booking_status BOOKING_STATUS DEFAULT 'Waiting',
   	booking_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(src_station_id) REFERENCES railway_station(station_id) ON DELETE CASCADE,
