@@ -24,21 +24,24 @@ BEGIN
         -- Loop all the passengers in the waiting queue in order of booking time
         FOR waiting_ticket IN (SELECT pnr,
                                     train_no,
-                                    src_station_id
+                                    src_station_id,
                                     dest_station_id,
-                                    date
+                                    date,
+                                    seat_type
                                 FROM ticket
                                 WHERE booking_status = 'Waiting'
-                                    AND date = NEW.date
+                                    AND (date - get_journey_at_station(src_station_id, train_no) + 1) =
+                                (NEW.date - get_journey_at_station(NEW.src_station_id, NEW.train_no) + 1)
                                     AND train_no = NEW.train_no
                                 ORDER BY booking_time ASC)
         LOOP
+            RAISE NOTICE '%', waiting_ticket;
             -- Extract train_name, source/destination station names
             SELECT get_train_name(waiting_ticket.train_no)
             INTO train_name;
-            SELECT src_station_name(waiting_ticket.src_station_id)
+            SELECT get_station_name(waiting_ticket.src_station_id)
             INTO src_station_name;
-            SELECT dest_station_name(waiting_ticket.dest_station_id)
+            SELECT get_station_name(waiting_ticket.dest_station_id)
             INTO dest_station_name;
 
             -- Try allocating seat to this passenger

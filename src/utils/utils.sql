@@ -168,6 +168,24 @@ END;
 $$;
 
 
+-- Get the journey of the train at the given station
+CREATE OR REPLACE FUNCTION get_journey_at_station(in_station_id INT, in_train_no INT)
+RETURNS INT
+LANGUAGE PLPGSQL
+AS $$
+DECLARE
+    in_journey_day INT;
+BEGIN
+    SELECT (arr_time).day_of_journey
+    INTO in_journey_day
+    FROM schedule
+    WHERE train_no = in_train_no
+        AND curr_station_id = in_station_id;
+
+    RETURN in_journey_day;
+END;
+$$;
+
 -- Get Days of a train at a station
 CREATE OR REPLACE FUNCTION get_days_at_station(in_station_id INT, in_train_no INT)
 RETURNS DAY_OF_WEEK[]
@@ -179,11 +197,8 @@ DECLARE
     len INT;
     i INT;
 BEGIN
-    SELECT (arr_time).day_of_journey
-    INTO in_journey_day
-    FROM schedule
-    WHERE train_no = in_train_no
-        AND curr_station_id = in_station_id;
+    SELECT get_journey_at_station(in_station_id, in_train_no)
+    INTO in_journey_day;
 
     SELECT week_days
     INTO result

@@ -137,8 +137,6 @@ DECLARE
     in_total_seats INT;
     -- debug_cnt INT := 0;
     in_days DAY_OF_WEEK;
-    src_station_days DAY_OF_WEEK[];
-    in_day DAY_OF_WEEK;
     tmp_seat_type SEAT_TYPE;
 BEGIN
     -- Getting the declared values
@@ -190,14 +188,13 @@ BEGIN
         END LOOP;
     END LOOP;
 
-
-
     -- Updating booked values
     FOR reservation_info IN (SELECT src_station_id AS travel_src_station,
                                 dest_station_id AS travel_dest_station,
                                 seat_id
                             FROM ticket
-                            WHERE date = in_date
+                            WHERE (date - get_journey_at_station(src_station_id, train_no) + 1) =
+                                (in_date - get_journey_at_station(in_src_station_id, in_train_no) + 1)
                                 AND train_no = in_train_no
                                 AND booking_status = 'Booked'
                                 AND seat_type = in_seat_type
@@ -555,7 +552,8 @@ BEGIN
     FROM ticket
     WHERE train_no = in_train_no
         AND booking_status = 'Booked'
-        AND date = in_date
+        AND (date - get_journey_at_station(src_station_id, train_no) + 1) =
+            (in_date - get_journey_at_station(in_src_station_id, in_train_no) + 1)
         AND ARRAY_LENGTH(
                 (get_sch_ids(train_no, src_station_id, dest_station_id) & sch_ids), 1
             ) >= 1;
