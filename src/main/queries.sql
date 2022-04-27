@@ -11,7 +11,6 @@ CREATE OR REPLACE PROCEDURE book_tickets(
     in_date DATE,
   	in_email VARCHAR(100)
 )
-LANGUAGE PLPGSQL
 AS $$
 DECLARE
     fare INT;
@@ -85,14 +84,14 @@ BEGIN
             );
     END LOOP;
 
-	COMMIT;
+	-- COMMIT;
 END;
-$$;
+$$ LANGUAGE PLPGSQL
+   SECURITY DEFINER;
 
 
 -- 2. Cancel booking
 CREATE OR REPLACE PROCEDURE cancel_booking(in_pnr UUID)
-LANGUAGE PLPGSQL
 AS $$
 BEGIN
     -- DEPRECATED CODE
@@ -110,7 +109,8 @@ BEGIN
         seat_id = NULL
 	WHERE pnr = in_pnr;
 END;
-$$;
+$$ LANGUAGE PLPGSQL
+   SECURITY DEFINER;
 
 
 -- 3. Confirm the status and allocate a seat to the ticket of the passenger - Admin
@@ -271,7 +271,6 @@ RETURNS TABLE (
     train_name VARCHAR(100),
     seats_available TEXT
 )
-LANGUAGE PLPGSQL
 AS $$
 DECLARE
     src_id INT;
@@ -307,7 +306,8 @@ BEGIN
             AND train.train_no = s1.train_no
             AND in_day = ANY(get_days_at_station(src_id, train.train_no));
 END;
-$$;
+$$ LANGUAGE PLPGSQL
+   SECURITY DEFINER;
 
 
 -- 5. Given a train give a schedule for it
@@ -318,7 +318,6 @@ RETURNS TABLE (
     arrival_time DAY_TIME,
     departure_time DAY_TIME
 )
-LANGUAGE PLPGSQL
 AS $$
 DECLARE
     train_number INT;
@@ -346,7 +345,8 @@ BEGIN
             LEFT JOIN railway_station AS rs2 ON rs2.station_id = sch.next_station_id
         ORDER BY sch.arr_time ASC;
 END;
-$$;
+$$ LANGUAGE PLPGSQL
+   SECURITY DEFINER;
 
 
 -- 6. Give the schedule of all the trains at a station
@@ -363,7 +363,6 @@ RETURNS TABLE(
     total_seats INT,
     week_days DAY_OF_WEEK[]
 )
-LANGUAGE PLPGSQL
 AS $$
 DECLARE
     in_station_id INT;
@@ -399,7 +398,8 @@ BEGIN
             JOIN railway_station AS dest ON tt.dest_station_id = dest.station_id
         ORDER BY st.train_no ASC;
 END;
-$$;
+$$ LANGUAGE PLPGSQL
+   SECURITY DEFINER;
 
 
 -- 7. Fare of the train route for a particular train from source to destination
@@ -409,7 +409,6 @@ CREATE OR REPLACE FUNCTION get_fare(
   	dest_station VARCHAR(100)
 )
 RETURNS INT
-LANGUAGE PLPGSQL
 AS $$
 DECLARE
 	train_number INT;
@@ -445,7 +444,8 @@ BEGIN
 
     RETURN total_fare;
 END;
-$$;
+$$ LANGUAGE PLPGSQL
+   SECURITY DEFINER;
 
 
 -- 8. For a given PNR, give details of the journey and the passenger.
@@ -468,7 +468,6 @@ RETURNS TABLE(
     seat_no INT,
     seat_type SEAT_TYPE
 )
-LANGUAGE PLPGSQL
 AS $$
 BEGIN
     PERFORM validate_pnr(in_pnr);
@@ -503,7 +502,8 @@ BEGIN
             JOIN users AS u ON u.user_id = t.user_id
             LEFT JOIN seat AS s ON s.seat_id = t.seat_id;
 END;
-$$;
+$$ LANGUAGE PLPGSQL
+   SECURITY DEFINER;
 
 
 -- 9. No. of seats available for a particular train from src to dest on a particular date
@@ -514,7 +514,6 @@ CREATE OR REPLACE FUNCTION num_seats_available_from_src_to_dest(
     in_date DATE
 )
 RETURNS INTEGER
-LANGUAGE PLPGSQL
 AS $$
 DECLARE
     in_train_no INT;
@@ -561,13 +560,13 @@ BEGIN
     INTO result;
     RETURN result;
 END;
-$$;
+$$ LANGUAGE PLPGSQL
+   SECURITY DEFINER;
 
 
 -- 10. Status of seat reservation: In the waiting list or confirmed?
 CREATE OR REPLACE FUNCTION get_ticket_status(in_pnr UUID)
 RETURNS BOOKING_STATUS
-LANGUAGE PLPGSQL
 AS $$
 DECLARE
 	status BOOKING_STATUS;
@@ -581,7 +580,8 @@ BEGIN
 
     RETURN status;
 END;
-$$;
+$$ LANGUAGE PLPGSQL
+   SECURITY DEFINER;
 
 
 -- 11. What is the status of a given train at a given station? Delayed or On-time…
@@ -590,7 +590,6 @@ CREATE OR REPLACE FUNCTION get_train_status(
     station_name VARCHAR(100)
 )
 RETURNS INTERVAL
-LANGUAGE PLPGSQL
 AS $$
 DECLARE
     in_train_no INT;
@@ -614,7 +613,8 @@ BEGIN
 
     RETURN train_status;
 END;
-$$;
+$$ LANGUAGE PLPGSQL
+   SECURITY DEFINER;
 
 
 -- 12. Add a new railway station - Admin
@@ -623,14 +623,14 @@ CREATE OR REPLACE PROCEDURE add_railway_station(
     in_city VARCHAR(100),
     in_state VARCHAR(100)
 )
-LANGUAGE PLPGSQL
 AS $$
 BEGIN
     INSERT INTO railway_station(name, city, state)
     VALUES (in_name, in_city, in_state);
-    COMMIT;
+    -- COMMIT;
 END;
-$$;
+$$ LANGUAGE PLPGSQL
+   SECURITY DEFINER;
 
 -- 13. Add a new schedule for a new route - Admin
 CREATE OR REPLACE PROCEDURE add_schedule(
@@ -643,7 +643,6 @@ CREATE OR REPLACE PROCEDURE add_schedule(
     in_dep_time DAY_TIME[],
     in_fares NUMERIC(7, 2)[]
 )
-LANGUAGE PLPGSQL
 AS $$
 DECLARE
     in_train_no INT;
@@ -780,9 +779,10 @@ BEGIN
     --     END LOOP;
     -- END LOOP;
 
-    COMMIT;
+    -- COMMIT;
 END;
-$$;
+$$ LANGUAGE PLPGSQL
+   SECURITY DEFINER;
 
 
 -- 14. Add a new user
@@ -792,14 +792,14 @@ CREATE OR REPLACE PROCEDURE add_user(
   	in_age INT,
   	in_mobile VARCHAR(20)
 )
-LANGUAGE PLPGSQL
 AS $$
 BEGIN
 	INSERT INTO users(username, email_id, age, mobile_no)
     VALUES (in_name, in_email, in_age, in_mobile);
-    COMMIT;
+    -- COMMIT;
 END;
-$$;
+$$ LANGUAGE PLPGSQL
+   SECURITY DEFINER;
 
 
 -- 15. Update train status
@@ -808,7 +808,6 @@ CREATE OR REPLACE PROCEDURE update_train_status(
   	station_name VARCHAR(100),
   	in_delay INTERVAL
 )
-LANGUAGE PLPGSQL
 AS $$
 DECLARE
 	train_id INT;
@@ -825,7 +824,8 @@ BEGIN
 	WHERE train_no = train_id
 		AND curr_station_id = station_id;
 END;
-$$;
+$$ LANGUAGE PLPGSQL
+   SECURITY DEFINER;
 
 
 -------------------------------------------------------------------------------------------------------------------------------------------------

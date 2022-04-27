@@ -35,7 +35,7 @@ BEGIN
                                     AND train_no = NEW.train_no
                                 ORDER BY booking_time ASC)
         LOOP
-            RAISE NOTICE '%', waiting_ticket;
+            -- RAISE NOTICE '%', waiting_ticket;
             -- Extract train_name, source/destination station names
             SELECT get_train_name(waiting_ticket.train_no)
             INTO train_name;

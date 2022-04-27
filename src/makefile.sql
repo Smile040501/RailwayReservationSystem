@@ -2,7 +2,7 @@
 
 \i clean.sql
 
-\c project
+\c railway_reservation_system
 
 \i main/types_and_extensions.sql
 \i main/operators.sql
@@ -13,7 +13,11 @@
 \i main/queries.sql
 \i main/triggers.sql
 
--- \i users/users.sql
+\i roles/users.sql
+\i roles/passenger.sql
+\i roles/station_master.sql
+\i roles/rls.sql
+\i roles/dbAdmin.sql
 
 \i tests/railway_stations.sql
 \i tests/schedules.sql
