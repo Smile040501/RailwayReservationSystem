@@ -106,7 +106,8 @@ BEGIN
 
 	-- Update ticket table
 	UPDATE ticket
-	SET booking_status = 'Cancelled'
+	SET booking_status = 'Cancelled',
+        seat_id = NULL
 	WHERE pnr = in_pnr;
 END;
 $$;

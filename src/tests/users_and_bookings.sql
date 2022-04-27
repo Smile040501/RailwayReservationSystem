@@ -45,7 +45,7 @@ CALL book_tickets(
     'ghi@ghi.com'
 );
 
--- this will be in waiting 
+-- this will be in waiting
 CALL book_tickets(
     ARRAY['titu']::VARCHAR(100)[],
     ARRAY[31]::INT[],
@@ -93,7 +93,7 @@ CALL book_tickets(  -- Will get seat booked
     'mno@mno.com'::VARCHAR(100)
 );
 
-CALL book_tickets(  -- `gfe` not get seat booked
+CALL book_tickets(  -- `lkj` not get seat booked
     ARRAY['lkj', 'gfe']::VARCHAR(100)[],
     ARRAY[37, 55]::INT[],
     ARRAY['AC', 'NON-AC']::SEAT_TYPE[],
@@ -173,4 +173,3 @@ CALL book_tickets(  -- Will not get seat booked
     '2022-04-29'::DATE,
     'ghi@ghi.com'
 );
-
