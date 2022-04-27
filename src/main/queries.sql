@@ -41,16 +41,8 @@ BEGIN
     SELECT get_station_id(dest_station)
     INTO dest_id;
 
-    -- Get days on which the train runs from source station
-    SELECT get_days_at_station(src_id, train_number)
-    INTO src_station_days;
-
-    -- Get day of the week on which the ticket is booked
-    SELECT get_day(in_date)
-    INTO in_day;
-
     -- Check if the train runs on the day of the booking
-    ASSERT in_day = ANY(src_station_days), 'The train "' || train_name || '" does not run on the date "' || (in_date::TEXT) || '" at the station "' || (src_station::TEXT) || '"';
+    PERFORM validate_train_days_at_station(src_id, train_number, in_date);
 
     -- Get cost of the ticket
     SELECT get_fare(train_name, src_station, dest_station)
@@ -112,7 +104,7 @@ BEGIN
 	-- 	booked = FALSE
 	-- WHERE pnr = in_pnr;
 
-    SELECT validate_pnr(in_pnr);
+    PERFORM validate_pnr(in_pnr);
 
 	-- Update ticket table
 	UPDATE ticket
@@ -161,16 +153,8 @@ BEGIN
 
     -- RAISE NOTICE 'src_station_id %, dest_station_id %, in_seat_type %', in_src_station_id, in_dest_station_id, in_seat_type;
 
-    -- Get days on which the train runs from source station
-    SELECT get_days_at_station(in_src_station_id, in_train_no)
-    INTO src_station_days;
-
-    -- Get day of the week on which the ticket is booked
-    SELECT get_day(in_date)
-    INTO in_day;
-
     -- Check if the train runs on the day of the booking
-    ASSERT in_day = ANY(src_station_days), 'The train "' || in_train_name || '" does not run on the date "' || (in_date::TEXT) || '" at the station "' || (in_src_station_name::TEXT) || '"';
+    PERFORM validate_train_days_at_station(in_src_station_id, in_train_no, in_date);
 
     -- Getting the sch_ids
     SELECT get_sch_ids(in_train_no, in_src_station_id, in_dest_station_id)
@@ -183,7 +167,7 @@ BEGIN
     WHERE train_no = in_train_no;
 
     -- RAISE NOTICE 'total_seats %, sch_ids %', in_total_seats, sch_ids;
-    
+
     -- Create a tmp table for reservation
     CREATE TEMPORARY TABLE reservation (
         sch_id INT,
@@ -198,7 +182,7 @@ BEGIN
     LOOP
         FOREACH val IN ARRAY sch_ids
         LOOP
-            SELECT seat_type INTO tmp_seat_type FROM seat 
+            SELECT seat_type INTO tmp_seat_type FROM seat
             WHERE train_no = in_train_no
             AND seat_no = idx;
             INSERT INTO reservation(sch_id, seat_id, res_seat_type, booked)
@@ -206,7 +190,7 @@ BEGIN
         END LOOP;
     END LOOP;
 
-    
+
 
     -- Updating booked values
     FOR reservation_info IN (SELECT src_station_id AS travel_src_station,
@@ -491,7 +475,7 @@ RETURNS TABLE(
 LANGUAGE PLPGSQL
 AS $$
 BEGIN
-    SELECT validate_pnr(in_pnr);
+    PERFORM validate_pnr(in_pnr);
 
     RETURN QUERY
         WITH temp_table AS (
@@ -552,6 +536,9 @@ BEGIN
     SELECT get_station_id(in_dest_station_name)
     INTO in_dest_station_id;
 
+    -- Check if the train runs on the day of the booking
+    PERFORM validate_train_days_at_station(in_src_station_id, in_train_no, in_date);
+
     -- Getting the sch_ids
     SELECT get_sch_ids(in_train_no, in_src_station_id, in_dest_station_id)
     INTO sch_ids;
@@ -569,7 +556,9 @@ BEGIN
     WHERE train_no = in_train_no
         AND booking_status = 'Booked'
         AND date = in_date
-        AND (get_sch_ids(train_no, src_station_id, dest_station_id) & sch_ids) >= 1;
+        AND ARRAY_LENGTH(
+                (get_sch_ids(train_no, src_station_id, dest_station_id) & sch_ids), 1
+            ) >= 1;
 
     SELECT in_total_seats - booked_seats
     INTO result;
@@ -586,7 +575,7 @@ AS $$
 DECLARE
 	status BOOKING_STATUS;
 BEGIN
-    SELECT validate_pnr(in_pnr);
+    PERFORM validate_pnr(in_pnr);
 
     SELECT booking_status
     INTO status
