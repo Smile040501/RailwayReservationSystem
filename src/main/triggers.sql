@@ -51,7 +51,7 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE TRIGGER seat_allocation
+CREATE TRIGGER seat_allocation
 AFTER INSERT OR UPDATE
 ON ticket
 FOR EACH ROW

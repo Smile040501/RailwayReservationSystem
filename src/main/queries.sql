@@ -80,7 +80,8 @@ BEGIN
                 train_no,
                 user_id,
                 date,
-                pid
+                pid,
+                seat_type
             )
         VALUES (
                 fare,
@@ -89,7 +90,8 @@ BEGIN
                 train_number,
                 in_user_id,
                 in_date,
-                in_pid
+                in_pid,
+                in_seat_type[i]
             );
     END LOOP;
 
@@ -145,6 +147,7 @@ DECLARE
     in_days DAY_OF_WEEK;
     src_station_days DAY_OF_WEEK[];
     in_day DAY_OF_WEEK;
+    tmp_seat_type SEAT_TYPE;
 BEGIN
     -- Getting the declared values
     SELECT get_train_no(in_train_name)
@@ -156,7 +159,7 @@ BEGIN
     SELECT get_station_id(in_dest_station_name)
     INTO in_dest_station_id;
 
-    -- RAISE NOTICE 'src_station_id %, dest_station_id %', in_src_station_id, in_dest_station_id;
+    -- RAISE NOTICE 'src_station_id %, dest_station_id %, in_seat_type %', in_src_station_id, in_dest_station_id, in_seat_type;
 
     -- Get days on which the train runs from source station
     SELECT get_days_at_station(in_src_station_id, in_train_no)
@@ -179,6 +182,8 @@ BEGIN
     FROM train
     WHERE train_no = in_train_no;
 
+    -- RAISE NOTICE 'total_seats %, sch_ids %', in_total_seats, sch_ids;
+    
     -- Create a tmp table for reservation
     CREATE TEMPORARY TABLE reservation (
         sch_id INT,
@@ -193,10 +198,15 @@ BEGIN
     LOOP
         FOREACH val IN ARRAY sch_ids
         LOOP
+            SELECT seat_type INTO tmp_seat_type FROM seat 
+            WHERE train_no = in_train_no
+            AND seat_no = idx;
             INSERT INTO reservation(sch_id, seat_id, res_seat_type, booked)
-            VALUES (val, idx, 'AC', False), (val, idx, 'NON-AC', False);
+            VALUES (val, idx, tmp_seat_type, False);
         END LOOP;
     END LOOP;
+
+    
 
     -- Updating booked values
     FOR reservation_info IN (SELECT src_station_id AS travel_src_station,
