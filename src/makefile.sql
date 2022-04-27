@@ -12,6 +12,7 @@
 
 \i main/queries.sql
 \i main/triggers.sql
+\i main/indexes.sql
 
 \i roles/users.sql
 \i roles/passenger.sql

@@ -179,9 +179,12 @@ BEGIN
     LOOP
         FOREACH val IN ARRAY sch_ids
         LOOP
-            SELECT seat_type INTO tmp_seat_type FROM seat
+            SELECT seat_type
+            INTO tmp_seat_type
+            FROM seat
             WHERE train_no = in_train_no
             AND seat_no = idx;
+
             INSERT INTO reservation(sch_id, seat_id, res_seat_type, booked)
             VALUES (val, idx, tmp_seat_type, False);
         END LOOP;
