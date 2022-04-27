@@ -21,8 +21,6 @@ DECLARE
     in_user_id INT;
     temp_id UUID;
     num_names INT;
-    src_station_days DAY_OF_WEEK[];
-    in_day DAY_OF_WEEK;
     in_pid UUID;
 BEGIN
     -- Input validation
