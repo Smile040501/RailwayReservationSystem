@@ -174,6 +174,9 @@ BEGIN
         booked BOOLEAN
     );
 
+    CREATE INDEX temp_res_sch ON reservation USING HASH(sch_id);
+    CREATE INDEX temp_res_seat_id ON reservation USING HASH(seat_id);
+
     -- Add all possible pairs of schedule_id and seat_id to the tmp table
     -- TODO: Try to make this short
     FOR idx IN 1 .. in_total_seats
@@ -212,7 +215,7 @@ BEGIN
             UPDATE reservation
             SET booked = True
             WHERE sch_id = val
-                AND seat_id = reservation_info."seat_id"
+                AND seat_id = reservation_info.seat_id
                 AND res_seat_type = in_seat_type;
             -- debug_cnt := debug_cnt + 1;
             -- RAISE NOTICE 'inside loop seat_id %, sch_id %', reservation_info."seat_id", val;
@@ -242,7 +245,7 @@ BEGIN
         SELECT seat_id
         FROM reservation
         WHERE (sch_id = ANY(sch_ids))
-        AND res_seat_type = in_seat_type
+            AND res_seat_type = in_seat_type
         GROUP BY seat_id
         HAVING COALESCE(SUM((booked)::INT), 0) = 0
     )
