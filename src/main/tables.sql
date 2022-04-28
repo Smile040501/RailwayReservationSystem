@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS ticket (
     dest_station_id INT NOT NULL,
     train_no INT NOT NULL,
     user_id INT NOT NULL,
-    date DATE NOT NULL,
+    date DATE NOT NULL CHECK(date - CURRENT_DATE >= 0),
     pid UUID NOT NULL,
   	seat_id INT DEFAULT NULL,
     seat_type SEAT_TYPE DEFAULT NULL,

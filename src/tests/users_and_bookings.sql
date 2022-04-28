@@ -17,7 +17,7 @@ CALL book_tickets(
     'Indore_RS',
     'Bangalore_RS',
     'IJBC',
-    '2022-04-25'::DATE,
+    '2022-05-09'::DATE,
     'abc@abc.com'
 );
 
@@ -30,7 +30,7 @@ CALL book_tickets(
     'Kolkata_RS',
     'Bangalore_RS',
     'KCBMD',
-    '2022-04-25'::DATE,
+    '2022-05-09'::DATE,
     'ghi@ghi.com'
 );
 -- same seat as yogita
@@ -41,7 +41,7 @@ CALL book_tickets(
     'Bangalore_RS',
     'Delhi_RS',
     'KCBMD',
-    '2022-04-25'::DATE,
+    '2022-05-09'::DATE,
     'ghi@ghi.com'
 );
 
@@ -53,7 +53,7 @@ CALL book_tickets(
     'Chennai_RS',
     'Delhi_RS',
     'KCBMD',
-    '2022-04-25'::DATE,
+    '2022-05-09'::DATE,
     'mno@mno.com'
 );
 
@@ -66,7 +66,7 @@ CALL book_tickets(
     'Mumbai_RS',
     'Delhi_RS',
     'KMD',
-    '2022-04-26'::DATE,
+    '2022-05-10'::DATE,
     'mno@mno.com'
 );
 
@@ -78,7 +78,7 @@ CALL book_tickets(  -- Will get seat booked
     'Lucknow_RS'::VARCHAR(100),
     'Chennai_RS'::VARCHAR(100),
     'LGCP'::VARCHAR(100),
-    '2022-04-25'::DATE,
+    '2022-05-09'::DATE,
     'abc@abc.com'::VARCHAR(100)
 );
 
@@ -89,7 +89,7 @@ CALL book_tickets(  -- Will get seat booked
     'Gujarat_RS'::VARCHAR(100),
     'Palakkad_RS'::VARCHAR(100),
     'LGCP'::VARCHAR(100),
-    '2022-04-25'::DATE,
+    '2022-05-09'::DATE,
     'mno@mno.com'::VARCHAR(100)
 );
 
@@ -100,7 +100,7 @@ CALL book_tickets(  -- `lkj` not get seat booked
     'Gujarat_RS'::VARCHAR(100),
     'Chennai_RS'::VARCHAR(100),
     'LGCP'::VARCHAR(100),
-    '2022-04-25'::DATE,
+    '2022-05-09'::DATE,
     'def@def.com'::VARCHAR(100)
 );
 
@@ -113,7 +113,7 @@ CALL book_tickets(  -- Will get seat booked
     'Lucknow_RS'::VARCHAR(100),
     'Gujarat_RS'::VARCHAR(100),
     'LGCP'::VARCHAR(100),
-    '2022-04-18'::DATE,
+    '2022-05-16'::DATE,
     'abc@abc.com'::VARCHAR(100)
 );
 
@@ -124,7 +124,7 @@ CALL book_tickets(  -- Will get seat booked
     'Chennai_RS'::VARCHAR(100),
     'Palakkad_RS'::VARCHAR(100),
     'LGCP'::VARCHAR(100),
-    '2022-04-19'::DATE,
+    '2022-05-17'::DATE,
     'mno@mno.com'::VARCHAR(100)
 );
 
@@ -135,7 +135,7 @@ CALL book_tickets(  -- Will get seat booked
     'Gujarat_RS'::VARCHAR(100),
     'Chennai_RS'::VARCHAR(100),
     'LGCP'::VARCHAR(100),
-    '2022-04-18'::DATE,
+    '2022-05-16'::DATE,
     'def@def.com'::VARCHAR(100)
 );
 
@@ -148,7 +148,7 @@ CALL book_tickets(  -- Will get seat booked
     'Indore_RS'::VARCHAR(100),
     'Kolkata_RS'::VARCHAR(100),
     'GIJK'::VARCHAR(100),
-    '2022-04-28'::DATE,
+    '2022-05-26'::DATE,
     'abc@abc.com'::VARCHAR(100)
 );
 
@@ -159,7 +159,7 @@ CALL book_tickets(  -- Will not get seat booked
     'Gujarat_RS'::VARCHAR(100),
     'Jaipur_RS'::VARCHAR(100),
     'GIJK'::VARCHAR(100),
-    '2022-04-28'::DATE,
+    '2022-05-26'::DATE,
     'def@def.com'::VARCHAR(100)
 );
 
@@ -170,6 +170,6 @@ CALL book_tickets(  -- Will not get seat booked
     'Jaipur_RS',
     'Kolkata_RS',
     'GIJK',
-    '2022-04-29'::DATE,
+    '2022-05-27'::DATE,
     'ghi@ghi.com'
 );
