@@ -10,6 +10,8 @@
 
 \i utils/utils.sql
 
+\i main/views.sql
+
 \i main/queries.sql
 \i main/triggers.sql
 \i main/indexes.sql

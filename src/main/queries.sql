@@ -24,6 +24,7 @@ DECLARE
 BEGIN
     -- Input validation
     ASSERT ARRAY_LENGTH(in_name, 1) = ARRAY_LENGTH(in_age, 1), 'Number of names and age for the passengers do not match';
+    ASSERT ARRAY_LENGTH(in_name, 1) = ARRAY_LENGTH(in_seat_type, 1), 'Number of names and seats for the passengers do not match';
 
 	-- Extracting different variables
     SELECT get_user_id(in_email)
@@ -318,8 +319,11 @@ CREATE OR REPLACE FUNCTION get_train_schedule(train_name VARCHAR(100))
 RETURNS TABLE (
     current_station TEXT,
     next_station TEXT,
-    arrival_time DAY_TIME,
-    departure_time DAY_TIME
+    arrival_time TIME,
+    departure_time TIME,
+    arrival_days TEXT,
+    departure_days TEXT,
+    delay_time INTERVAL
 )
 AS $$
 DECLARE
@@ -330,23 +334,34 @@ BEGIN
     INTO train_number;
 
     RETURN QUERY
-        WITH temp_table AS (
-            SELECT train_no,
-                curr_station_id,
-                next_station_id,
-                arr_time,
-                dep_time
-            FROM schedule
-            WHERE train_no = train_number
-        )
-        SELECT rs1.name || ', ' || rs1.city || ', ' || rs1.state AS current_station,
-            rs2.name || ', ' || rs2.city || ', ' || rs2.state AS next_station,
-            sch.arr_time AS arrival_time,
-            sch.dep_time AS departure_time
-        FROM temp_table AS sch
-            JOIN railway_station AS rs1 ON rs1.station_id = sch.curr_station_id
-            LEFT JOIN railway_station AS rs2 ON rs2.station_id = sch.next_station_id
-        ORDER BY sch.arr_time ASC;
+        SELECT st.current_station,
+            st.next_station,
+            st.arrival_time,
+            st.departure_time,
+            st.arrival_days,
+            st.departure_days,
+            st.delay_time
+        FROM stations_trains AS st
+        WHERE st.train_no = train_number;
+        -- WITH temp_table AS (
+        --     SELECT train_no,
+        --         curr_station_id,
+        --         next_station_id,
+        --         arr_time,
+        --         dep_time,
+        --         delay_time
+        --     FROM schedule
+        --     WHERE train_no = train_number
+        -- )
+        -- SELECT rs1.name || ', ' || rs1.city || ', ' || rs1.state AS current_station,
+        --     rs2.name || ', ' || rs2.city || ', ' || rs2.state AS next_station,
+        --     sch.arr_time AS arrival_time,
+        --     sch.dep_time AS departure_time,
+        --     sch.delay_time AS delay_time
+        -- FROM temp_table AS sch
+        --     JOIN railway_station AS rs1 ON rs1.station_id = sch.curr_station_id
+        --     LEFT JOIN railway_station AS rs2 ON rs2.station_id = sch.next_station_id
+        -- ORDER BY sch.arr_time ASC;
 END;
 $$ LANGUAGE PLPGSQL
    SECURITY DEFINER;
@@ -360,8 +375,10 @@ RETURNS TABLE(
     source_station TEXT,
     next_station TEXT,
     destination_station TEXT,
-    arrival_time DAY_TIME,
-    departure_time DAY_TIME,
+    arrival_time TIME,
+    departure_time TIME,
+    arrival_days TEXT,
+    departure_days TEXT,
     delay_time INTERVAL,
     total_seats INT,
     week_days DAY_OF_WEEK[]
@@ -375,31 +392,45 @@ BEGIN
     INTO in_station_id;
 
     RETURN QUERY
-        WITH temp_table AS (
-            SELECT sch.train_no,
-                sch.next_station_id,
-                sch.arr_time,
-                sch.dep_time,
-                sch.delay_time
-            FROM schedule as sch
-            WHERE sch.curr_station_id = in_station_id
-        )
         SELECT st.train_no,
-            tt.name AS train_name,
-            src.name || ', ' || src.city || ', ' || src.state AS source_station,
-            nxt.name || ', ' || nxt.city || ', ' || nxt.state AS next_station,
-            dest.name || ', ' || dest.city || ', ' || dest.state AS destination_station,
-            st.arr_time AS arrival_time,
-            st.dep_time AS departure_time,
+            st.train_name,
+            st.source_station,
+            st.next_station,
+            st.destination_station,
+            st.arrival_time,
+            st.departure_time,
+            st.arrival_days,
+            st.departure_days,
             st.delay_time,
-            tt.total_seats,
-            tt.week_days
-        FROM temp_table AS st
-            JOIN train AS tt ON st.train_no = tt.train_no
-            JOIN railway_station AS src ON tt.src_station_id = src.station_id
-            LEFT JOIN railway_station AS nxt ON st.next_station_id = nxt.station_id
-            JOIN railway_station AS dest ON tt.dest_station_id = dest.station_id
-        ORDER BY st.train_no ASC;
+            st.total_seats,
+            st.week_days
+        FROM stations_trains AS st
+        WHERE st.curr_station_id = in_station_id;
+        -- WITH temp_table AS (
+        --     SELECT sch.train_no,
+        --         sch.next_station_id,
+        --         sch.arr_time,
+        --         sch.dep_time,
+        --         sch.delay_time
+        --     FROM schedule as sch
+        --     WHERE sch.curr_station_id = in_station_id
+        -- )
+        -- SELECT st.train_no,
+        --     tt.name AS train_name,
+        --     src.name || ', ' || src.city || ', ' || src.state AS source_station,
+        --     nxt.name || ', ' || nxt.city || ', ' || nxt.state AS next_station,
+        --     dest.name || ', ' || dest.city || ', ' || dest.state AS destination_station,
+        --     st.arr_time AS arrival_time,
+        --     st.dep_time AS departure_time,
+        --     st.delay_time,
+        --     tt.total_seats,
+        --     tt.week_days
+        -- FROM temp_table AS st
+        --     JOIN train AS tt ON st.train_no = tt.train_no
+        --     JOIN railway_station AS src ON tt.src_station_id = src.station_id
+        --     LEFT JOIN railway_station AS nxt ON st.next_station_id = nxt.station_id
+        --     JOIN railway_station AS dest ON tt.dest_station_id = dest.station_id
+        -- ORDER BY st.train_no ASC;
 END;
 $$ LANGUAGE PLPGSQL
    SECURITY DEFINER;
@@ -487,8 +518,8 @@ BEGIN
             p.age AS passenger_age,
             t.train_no,
             tr.name AS train_name,
-            rs1.name || ', ' || rs1.city || ', ' || rs1.state AS source_station,
-            rs2.name || ', ' || rs2.city || ', ' || rs2.state AS destination_station,
+            pretty_station_name(rs1.name, rs1.city, rs1.state) AS source_station,
+            pretty_station_name(rs2.name, rs2.city, rs2.state) AS destination_station,
             t.date,
             t.cost,
             u.username AS user_name,

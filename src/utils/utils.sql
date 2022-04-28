@@ -250,3 +250,76 @@ BEGIN
     ASSERT in_day = ANY(src_station_days), 'The train "' || in_train_name || '" does not run on the date "' || (in_date::TEXT) || '" at the station "' || (in_src_station_name::TEXT) || '"';
 END;
 $$;
+
+
+-- Validate whether the train runs from the given station on the given date
+CREATE OR REPLACE FUNCTION validate_train_days_at_station(
+    in_src_station_id INT,
+    in_train_no INT,
+    in_date DATE
+)
+RETURNS VOID
+LANGUAGE PLPGSQL
+AS $$
+DECLARE
+    src_station_days DAY_OF_WEEK[];
+    in_day DAY_OF_WEEK;
+    in_train_name VARCHAR(100);
+    in_src_station_name VARCHAR(100);
+BEGIN
+        -- Get days on which the train runs from source station
+    SELECT get_days_at_station(in_src_station_id, in_train_no)
+    INTO src_station_days;
+
+    -- Get day of the week on which the ticket is booked
+    SELECT get_day(in_date)
+    INTO in_day;
+
+    SELECT get_train_name(in_train_no)
+    INTO in_train_name;
+
+    SELECT get_station_name(in_src_station_id)
+    INTO in_src_station_name;
+
+    -- Check if the train runs on the day of the booking
+    ASSERT in_day = ANY(src_station_days), 'The train "' || in_train_name || '" does not run on the date "' || (in_date::TEXT) || '" at the station "' || (in_src_station_name::TEXT) || '"';
+END;
+$$;
+
+
+-- Get the updated days of array
+CREATE OR REPLACE FUNCTION get_updated_days(
+    step INT,
+    in_days DAY_OF_WEEK[]
+)
+RETURNS DAY_OF_WEEK[]
+LANGUAGE PLPGSQL
+AS $$
+DECLARE
+    result DAY_OF_WEEK[];
+    idx INT := 0;
+    in_day DAY_OF_WEEK;
+BEGIN
+    FOREACH in_day IN ARRAY in_days LOOP
+        result[idx] := in_day @+ step;
+        idx := idx + 1;
+    END LOOP;
+
+    RETURN result;
+END;
+$$;
+
+
+-- Pretty prints the station name
+CREATE OR REPLACE FUNCTION pretty_station_name(
+    in_name VARCHAR(100),
+    in_city VARCHAR(100),
+    in_state VARCHAR(100)
+)
+RETURNS TEXT
+LANGUAGE PLPGSQL
+AS $$
+BEGIN
+    RETURN in_name || ', ' || in_city || ', ' || in_state;
+END;
+$$;
