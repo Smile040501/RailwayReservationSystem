@@ -1,9 +1,9 @@
 -- Users
-CALL add_user('abc', 'abc@abc.com', 18, '9888887777');
-CALL add_user('def', 'def@def.com', 25, '9777766555');
-CALL add_user('ghi', 'ghi@ghi.com', 40, '9999999999');
-CALL add_user('jkl', 'jkl@jkl.com', 31, '9876543210');
-CALL add_user('mno', 'mno@mno.com', 55, '9988776655');
+CALL add_user('abc', 'abc@abc.com', 'abc', 18, '9888887777');
+CALL add_user('def', 'def@def.com', 'def', 25, '9777766555');
+CALL add_user('ghi', 'ghi@ghi.com', 'ghi', 40, '9999999999');
+CALL add_user('jkl', 'jkl@jkl.com', 'jkl', 31, '9876543210');
+CALL add_user('mno', 'mno@mno.com', 'mno', 55, '9988776655');
 
 
 -- Bookings

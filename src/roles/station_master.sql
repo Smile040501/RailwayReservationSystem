@@ -15,5 +15,5 @@ GRANT EXECUTE ON PROCEDURE add_railway_station,
     update_train_status
 TO station_master;
 
-CREATE USER qpr IN GROUP users PASSWORD 'qpr';
-CREATE USER pst IN GROUP users PASSWORD 'pst';
+CREATE USER qpr IN GROUP station_master PASSWORD 'qpr';
+CREATE USER pst IN GROUP station_master PASSWORD 'pst';

@@ -5,7 +5,7 @@ CREATE POLICY users_policy
 ON users
 FOR ALL
 TO users
-USING (username = CURRENT_USER);
+USING (email_id = CURRENT_USER);
 
 ALTER TABLE ticket
 ENABLE ROW LEVEL SECURITY;
@@ -16,7 +16,7 @@ FOR SELECT
 TO users
 USING (ticket.user_id = (SELECT user_id
                             FROM users
-                            WHERE username = CURRENT_USER
+                            WHERE email_id = CURRENT_USER
                         )
     );
 
@@ -32,7 +32,7 @@ USING (passenger.pid = ANY(SELECT pid
                             FROM ticket
                             WHERE ticket.user_id = (SELECT user_id
                                                     FROM users
-                                                    WHERE username = CURRENT_USER
+                                                    WHERE email_id = CURRENT_USER
                                                     )
                         )
     );

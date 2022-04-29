@@ -18,8 +18,3 @@ TO users;
 
 GRANT EXECUTE ON FUNCTION get_passenger_details
 TO users;
-
-CREATE USER abc IN GROUP users PASSWORD 'abc';
-CREATE USER def IN GROUP users PASSWORD 'def';
-CREATE USER ghi IN GROUP users PASSWORD 'ghi';
-CREATE USER jkl IN GROUP users PASSWORD 'jkl';

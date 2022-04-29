@@ -826,6 +826,7 @@ $$ LANGUAGE PLPGSQL
 CREATE OR REPLACE PROCEDURE add_user(
   	in_name VARCHAR(100),
   	in_email VARCHAR(100),
+    in_password VARCHAR(100),
   	in_age INT,
   	in_mobile VARCHAR(20)
 )
@@ -833,6 +834,9 @@ AS $$
 BEGIN
 	INSERT INTO users(username, email_id, age, mobile_no)
     VALUES (in_name, in_email, in_age, in_mobile);
+
+    EXECUTE FORMAT($f$CREATE USER %I IN GROUP users PASSWORD '%s'$f$, in_email, in_password);
+
     -- COMMIT;
 END;
 $$ LANGUAGE PLPGSQL
