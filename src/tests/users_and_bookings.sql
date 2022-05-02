@@ -10,6 +10,9 @@ CALL add_user('mno', 'mno@mno.com', 'mno', 55, '9988776655');
 
 -- TC-1
 -- pqr will in waiting
+
+\c railway_reservation_system abc@abc.com
+
 CALL book_tickets(
     ARRAY['ghi', 'jkl', 'mno', 'pqr']::VARCHAR(100)[],
     ARRAY[13, 15, 17, 19]::INT[],
@@ -17,12 +20,12 @@ CALL book_tickets(
     'Indore_RS',
     'Bangalore_RS',
     'IJBC',
-    '2022-05-09'::DATE,
-    'abc@abc.com'
+    '2022-05-09'::DATE
 );
 
 -- TC-2
 -- same seat as nanu
+\c railway_reservation_system ghi@ghi.com
 CALL book_tickets(
     ARRAY['yogita']::VARCHAR(100)[],
     ARRAY[35]::INT[],
@@ -30,8 +33,7 @@ CALL book_tickets(
     'Kolkata_RS',
     'Bangalore_RS',
     'KCBMD',
-    '2022-05-09'::DATE,
-    'ghi@ghi.com'
+    '2022-05-09'::DATE
 );
 -- same seat as yogita
 CALL book_tickets(
@@ -41,11 +43,11 @@ CALL book_tickets(
     'Bangalore_RS',
     'Delhi_RS',
     'KCBMD',
-    '2022-05-09'::DATE,
-    'ghi@ghi.com'
+    '2022-05-09'::DATE
 );
 
 -- this will be in waiting
+\c railway_reservation_system mno@mno.com
 CALL book_tickets(
     ARRAY['titu']::VARCHAR(100)[],
     ARRAY[31]::INT[],
@@ -53,8 +55,7 @@ CALL book_tickets(
     'Chennai_RS',
     'Delhi_RS',
     'KCBMD',
-    '2022-05-09'::DATE,
-    'mno@mno.com'
+    '2022-05-09'::DATE
 );
 
 -- TC-3
@@ -66,11 +67,11 @@ CALL book_tickets(
     'Mumbai_RS',
     'Delhi_RS',
     'KMD',
-    '2022-05-10'::DATE,
-    'mno@mno.com'
+    '2022-05-10'::DATE
 );
 
 -- TC-4
+\c railway_reservation_system abc@abc.com
 CALL book_tickets(  -- Will get seat booked
     ARRAY['zyx']::VARCHAR(100)[],
     ARRAY[13]::INT[],
@@ -78,10 +79,10 @@ CALL book_tickets(  -- Will get seat booked
     'Lucknow_RS'::VARCHAR(100),
     'Chennai_RS'::VARCHAR(100),
     'LGCP'::VARCHAR(100),
-    '2022-05-09'::DATE,
-    'abc@abc.com'::VARCHAR(100)
+    '2022-05-09'::DATE
 );
 
+\c railway_reservation_system mno@mno.com
 CALL book_tickets(  -- Will get seat booked
     ARRAY['wvu']::VARCHAR(100)[],
     ARRAY[29]::INT[],
@@ -89,10 +90,10 @@ CALL book_tickets(  -- Will get seat booked
     'Gujarat_RS'::VARCHAR(100),
     'Palakkad_RS'::VARCHAR(100),
     'LGCP'::VARCHAR(100),
-    '2022-05-09'::DATE,
-    'mno@mno.com'::VARCHAR(100)
+    '2022-05-09'::DATE
 );
 
+\c railway_reservation_system def@def.com
 CALL book_tickets(  -- `lkj` not get seat booked
     ARRAY['lkj', 'gfe']::VARCHAR(100)[],
     ARRAY[37, 55]::INT[],
@@ -100,12 +101,12 @@ CALL book_tickets(  -- `lkj` not get seat booked
     'Gujarat_RS'::VARCHAR(100),
     'Chennai_RS'::VARCHAR(100),
     'LGCP'::VARCHAR(100),
-    '2022-05-09'::DATE,
-    'def@def.com'::VARCHAR(100)
+    '2022-05-09'::DATE
 );
 
 
 -- TC-5
+\c railway_reservation_system abc@abc.com
 CALL book_tickets(  -- Will get seat booked
     ARRAY['cba']::VARCHAR(100)[],
     ARRAY[13]::INT[],
@@ -113,10 +114,10 @@ CALL book_tickets(  -- Will get seat booked
     'Lucknow_RS'::VARCHAR(100),
     'Gujarat_RS'::VARCHAR(100),
     'LGCP'::VARCHAR(100),
-    '2022-05-16'::DATE,
-    'abc@abc.com'::VARCHAR(100)
+    '2022-05-16'::DATE
 );
 
+\c railway_reservation_system mno@mno.com
 CALL book_tickets(  -- Will get seat booked
     ARRAY['rqp']::VARCHAR(100)[],
     ARRAY[29]::INT[],
@@ -124,10 +125,10 @@ CALL book_tickets(  -- Will get seat booked
     'Chennai_RS'::VARCHAR(100),
     'Palakkad_RS'::VARCHAR(100),
     'LGCP'::VARCHAR(100),
-    '2022-05-17'::DATE,
-    'mno@mno.com'::VARCHAR(100)
+    '2022-05-17'::DATE
 );
 
+\c railway_reservation_system def@def.com
 CALL book_tickets(  -- Will get seat booked
     ARRAY['lkj', 'gfe']::VARCHAR(100)[],
     ARRAY[37, 55]::INT[],
@@ -135,12 +136,12 @@ CALL book_tickets(  -- Will get seat booked
     'Gujarat_RS'::VARCHAR(100),
     'Chennai_RS'::VARCHAR(100),
     'LGCP'::VARCHAR(100),
-    '2022-05-16'::DATE,
-    'def@def.com'::VARCHAR(100)
+    '2022-05-16'::DATE
 );
 
 
 -- TC-6
+\c railway_reservation_system abc@abc.com
 CALL book_tickets(  -- Will get seat booked
     ARRAY['abc']::VARCHAR(100)[],
     ARRAY[37]::INT[],
@@ -148,10 +149,10 @@ CALL book_tickets(  -- Will get seat booked
     'Indore_RS'::VARCHAR(100),
     'Kolkata_RS'::VARCHAR(100),
     'GIJK'::VARCHAR(100),
-    '2022-05-26'::DATE,
-    'abc@abc.com'::VARCHAR(100)
+    '2022-05-26'::DATE
 );
 
+\c railway_reservation_system def@def.com
 CALL book_tickets(  -- Will not get seat booked
     ARRAY['def']::VARCHAR(100)[],
     ARRAY[55]::INT[],
@@ -159,10 +160,10 @@ CALL book_tickets(  -- Will not get seat booked
     'Gujarat_RS'::VARCHAR(100),
     'Jaipur_RS'::VARCHAR(100),
     'GIJK'::VARCHAR(100),
-    '2022-05-26'::DATE,
-    'def@def.com'::VARCHAR(100)
+    '2022-05-26'::DATE
 );
 
+\c railway_reservation_system ghi@ghi.com
 CALL book_tickets(  -- Will not get seat booked
     ARRAY['ghi']::VARCHAR(100)[],
     ARRAY[61]::INT[],
@@ -170,6 +171,5 @@ CALL book_tickets(  -- Will not get seat booked
     'Jaipur_RS',
     'Kolkata_RS',
     'GIJK',
-    '2022-05-27'::DATE,
-    'ghi@ghi.com'
+    '2022-05-27'::DATE
 );

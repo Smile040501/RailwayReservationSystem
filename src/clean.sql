@@ -13,15 +13,13 @@ DROP ROLE IF EXISTS "mno";
 DROP ROLE IF EXISTS "pqr";
 
 -- Passengers
-DROP ROLE IF EXISTS "zyx";
-DROP ROLE IF EXISTS "cba";
+DROP ROLE IF EXISTS "passenger";
 
 -- Station Masters
 DROP ROLE IF EXISTS "qpr";
 DROP ROLE IF EXISTS "pst";
 
 REVOKE ALL ON DATABASE railway_reservation_system FROM users;
-REVOKE ALL ON DATABASE railway_reservation_system FROM passengers;
 REVOKE ALL ON DATABASE railway_reservation_system FROM dbAdmin;
 REVOKE ALL ON DATABASE railway_reservation_system FROM station_master;
 

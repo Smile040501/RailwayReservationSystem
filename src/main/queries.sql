@@ -8,8 +8,7 @@ CREATE OR REPLACE PROCEDURE book_tickets(
     src_station VARCHAR(100),
     dest_station VARCHAR(100),
     train_name VARCHAR(100),
-    in_date DATE,
-  	in_email VARCHAR(100)
+    in_date DATE
 )
 AS $$
 DECLARE
@@ -27,7 +26,7 @@ BEGIN
     ASSERT ARRAY_LENGTH(in_name, 1) = ARRAY_LENGTH(in_seat_type, 1), 'Number of names and seats for the passengers do not match';
 
 	-- Extracting different variables
-    SELECT get_user_id(in_email)
+    SELECT get_user_id(SESSION_USER::VARCHAR(100))
     INTO in_user_id ;
 
     SELECT get_train_no(train_name)
