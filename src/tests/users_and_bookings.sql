@@ -173,5 +173,3 @@ CALL book_tickets(  -- Will not get seat booked
     'GIJK',
     '2022-05-27'::DATE
 );
-
-\c railway_reservation_system postgres
