@@ -24,6 +24,5 @@ REVOKE ALL ON DATABASE railway_reservation_system FROM dbAdmin;
 REVOKE ALL ON DATABASE railway_reservation_system FROM station_master;
 
 DROP ROLE IF EXISTS users;
-DROP ROLE IF EXISTS passengers;
 DROP ROLE IF EXISTS dbAdmin;
 DROP ROLE IF EXISTS station_master;
