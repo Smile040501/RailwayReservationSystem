@@ -1,5 +1,10 @@
 -- Railway stations
-CALL add_railway_station('Bangalore_RS', 'Bangalore', 'KA');
+CALL add_railway_station(
+    in_name  => 'Bangalore_RS',
+    in_city  => 'Bangalore',
+    in_state => 'KA'
+);
+
 CALL add_railway_station('Chennai_RS', 'Chennai', 'TN');
 CALL add_railway_station('Delhi_RS', 'Delhi', 'DL');
 CALL add_railway_station('Gujarat_RS', 'Gandhinagar', 'GJ');

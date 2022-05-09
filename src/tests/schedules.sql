@@ -1,5 +1,16 @@
 -- Schedules for different trains
 CALL add_schedule(
+    in_name       => 'KMD'::VARCHAR(100),
+    in_seats      => ARRAY[1, 2, 3, 4, 5, 6]::INT[],
+    in_seat_types => ARRAY['AC', 'AC', 'NON-AC', 'AC', 'NON-AC', 'NON-AC']::SEAT_TYPE[],
+    in_week_days  => ARRAY['Monday', 'Thursday']::DAY_OF_WEEK[],
+    in_stations   => ARRAY['Kolkata_RS', 'Mumbai_RS', 'Delhi_RS']::VARCHAR(100)[],
+    in_arr_time   => ARRAY[(1, '12:00:00'), (2, '14:00:00'), (3, '16:00:00')]::DAY_TIME[],
+    in_dep_time   => ARRAY[(1, '13:00:00'), (3, '15:00:00'), (3, '17:00:00')]::DAY_TIME[],
+    in_fares      => ARRAY[0, 1000, 2000]::NUMERIC(7, 2)[]
+);
+
+CALL add_schedule(
     'PJBK'::VARCHAR(100),
     ARRAY[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]::INT[],
     ARRAY['AC', 'AC', 'AC', 'NON-AC', 'NON-AC', 'NON-AC', 'AC', 'AC', 'AC', 'AC']::SEAT_TYPE[],
@@ -19,17 +30,6 @@ CALL add_schedule(
     ARRAY[(1, '02:00:00'), (1, '06:00:00'), (1, '07:00:00'), (2, '09:00:00')]::DAY_TIME[],
     ARRAY[(1, '03:00:00'), (1, '06:30:00'), (1, '07:30:00'), (2, '09:20:00')]::DAY_TIME[],
     ARRAY[0, 1000, 4000, 9000]::NUMERIC(7, 2)[]
-);
-
-CALL add_schedule(
-    'KMD'::VARCHAR(100),
-    ARRAY[1, 2, 3, 4, 5, 6]::INT[],
-    ARRAY['AC', 'AC', 'NON-AC', 'AC', 'NON-AC', 'NON-AC']::SEAT_TYPE[],
-    ARRAY['Monday', 'Thursday']::DAY_OF_WEEK[],
-    ARRAY['Kolkata_RS', 'Mumbai_RS', 'Delhi_RS']::VARCHAR(100)[],
-    ARRAY[(1, '12:00:00'), (2, '14:00:00'), (3, '16:00:00')]::DAY_TIME[],
-    ARRAY[(1, '13:00:00'), (3, '15:00:00'), (3, '17:00:00')]::DAY_TIME[],
-    ARRAY[0, 1000, 2000]::NUMERIC(7, 2)[]
 );
 
 CALL add_schedule(

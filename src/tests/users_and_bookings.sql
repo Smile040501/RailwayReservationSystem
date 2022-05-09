@@ -1,5 +1,12 @@
 -- Users
-CALL add_user('abc', 'abc@abc.com', 'abc', 18, '9888887777');
+CALL add_user(
+    in_name     => 'abc',
+    in_email    => 'abc@abc.com',
+    in_password => 'abc',
+    in_age      => 18,
+    in_mobile   => '9888887777'
+);
+
 CALL add_user('def', 'def@def.com', 'def', 25, '9777766555');
 CALL add_user('ghi', 'ghi@ghi.com', 'ghi', 40, '9999999999');
 CALL add_user('jkl', 'jkl@jkl.com', 'jkl', 31, '9876543210');
@@ -14,13 +21,13 @@ CALL add_user('mno', 'mno@mno.com', 'mno', 55, '9988776655');
 \c railway_reservation_system abc@abc.com
 
 CALL book_tickets(
-    ARRAY['ghi', 'jkl', 'mno', 'pqr']::VARCHAR(100)[],
-    ARRAY[13, 15, 17, 19]::INT[],
-    ARRAY['NON-AC', 'NON-AC', 'NON-AC', 'NON-AC']::SEAT_TYPE[],
-    'Indore_RS',
-    'Bangalore_RS',
-    'IJBC',
-    '2022-05-09'::DATE
+    in_name      => ARRAY['ghi', 'jkl', 'mno', 'pqr']::VARCHAR(100)[],
+    in_age       => ARRAY[13, 15, 17, 19]::INT[],
+    in_seat_type => ARRAY['NON-AC', 'NON-AC', 'NON-AC', 'NON-AC']::SEAT_TYPE[],
+    src_station  => 'Indore_RS',
+    dest_station => 'Bangalore_RS',
+    train_name   => 'IJBC',
+    in_date      => '2022-05-09'::DATE
 );
 
 -- TC-2
